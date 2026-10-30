@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Predictor - Discover Your Wild Future!</title>
+    <!-- Google Fonts for Playful Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #2e0854, #1a0b36, #3b0a45);
+            --card-bg: rgba(255, 255, 255, 0.07);
+            --card-border: rgba(255, 255, 255, 0.15);
+            --primary-color: #ff2a8d;
+            --secondary-color: #00d2ff;
+            --accent-color: #b026ff;
+            --text-main: #ffffff;
+            --text-muted: #d0c2e8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid var(--card-border);
+            border-radius: 24px;
+            padding: 30px 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Header Styling */
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-family: 'Fredoka One', cursive, sans-serif;
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #ff2a8d, #b026ff, #00d2ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #ff9ee2;
+            font-size: 0.9rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 10px rgba(255, 42, 141, 0.3);
+        }
+
+        select option {
+            background: #220942;
+            color: #fff;
+        }
+
+        /* Button Styling */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #ff2a8d, #b026ff);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(176, 38, 255, 0.4);
+            transition: transform 0.2s ease, filter 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+        }
+
+        .user-title-badge {
+            background: linear-gradient(135deg, #00d2ff, #7b2cbf);
+            padding: 12px;
+            border-radius: 14px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .user-title-badge h2 {
+            font-size: 1.3rem;
+            font-family: 'Fredoka One', cursive, sans-serif;
+            color: #fff;
+            margin-top: 4px;
+        }
+
+        .user-title-badge span {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #aeefff;
+        }
+
+        .prediction-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 380px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        /* Custom scrollbar for cards */
+        .prediction-cards::-webkit-scrollbar {
+            width: 6px;
+        }
+        .prediction-cards::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .card-icon {
+            font-size: 1.8rem;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 8px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-content h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #00d2ff;
+            margin-bottom: 3px;
+        }
+
+        .card-content p {
+            font-size: 0.95rem;
+            color: #f1ebd9;
+            line-height: 1.4;
+        }
+
+        /* Action buttons at bottom of results */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: none;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Disclaimer Footer */
+        .disclaimer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 15px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .game-container {
+                padding: 20px 15px;
+            }
+            .header h1 {
+                font-size: 2rem;
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <!-- Input Form Screen -->
+        <div id="inputScreen">
+            <div class="header">
+                <h1>🔮 Future Predictor</h1>
+                <p>Uncover your hilariously unpredictable destiny!</p>
+            </div>
+
+            <form id="predictorForm">
+                <div class="form-group">
+                    <label for="name">Your Name 🧑‍🎓</label>
+                    <input type="text" id="name" required placeholder="e.g., Alex">
+                </div>
+
+                <div class="form-group">
+                    <label for="age">Your Age 🎂</label>
+                    <input type="number" id="age" required min="1" max="120" placeholder="e.g., 20">
+                </div>
+
+                <div class="form-group">
+                    <label for="subject">Favorite Subject 📚</label>
+                    <select id="subject" required>
+                        <option value="" disabled selected>Select your favorite vibe</option>
+                        <option value="math">Mathematics 📐</option>
+                        <option value="cs">Computer Science 💻</option>
+                        <option value="history">History 📜</option>
+                        <option value="literature">Literature 📖</option>
+                        <option value="science">Science & Lab 🧪</option>
+                        <option value="none">None (I bunk classes) 🏃‍♂️</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="career">Dream Career 🚀</label>
+                    <select id="career" required>
+                        <option value="" disabled selected>Select your dream job</option>
+                        <option value="tech">Software Engineer / Tech Mogul 🤖</option>
+                        <option value="artist">Artist / Musician 🎨</option>
+                        <option value="business">Entrepreneur / CEO 💼</option>
+                        <option value="explorer">Space Explorer / Scientist 🌌</option>
+                        <option value="influencer">Professional Influencer 📸</option>
+                        <option value="sleep">Professional Sleeper 😴</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="mood">Current Mood ✨</label>
+                    <select id="mood" required>
+                        <option value="" disabled selected>How are you feeling right now?</option>
+                        <option value="energetic">Super Energetic ⚡</option>
+                        <option value="sleepy">Sleepy / Exhausted 🥱</option>
+                        <option value="confused">Clueless & Confused 🙃</option>
+                        <option value="hungry">Always Hungry 🍕</option>
+                        <option value="unstoppable">Ready to Conquer the World 🦁</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn">Predict My Future ✨</button>
+            </form>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="results-section">
+            <div class="header">
+                <h1>📜 Future Report</h1>
+                <p>Your destiny has been calculated by supreme algorithms!</p>
+            </div>
+
+            <div class="user-title-badge">
+                <span>Assigned Future Title</span>
+                <h2 id="assignedTitle">The Campus Legend</h2>
+            </div>
+
+            <div class="prediction-cards" id="predictionCardsContainer">
+                <!-- Dynamically filled result cards -->
+            </div>
+
+            <div class="action-buttons">
+                <button type="button" class="btn btn-secondary" id="tryAgainBtn">🔄 Try Again</button>
+                <button type="button" class="btn" id="shareBtn">📤 Share My Future</button>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            * Purely for entertainment and comedic purposes only! Not a real future prediction.
+        </div>
+    </div>
+
+    <script>
+        // Fun pool of customized titles
+        const titlesPool = [
+            "Future Millionaire 💰",
+            "Professional Sleeper 🛏️",
+            "Campus Legend 🎓",
+            "Chief Snack Officer 🍕",
+            "Accidental Multi-Billionaire 🚀",
+            "Supreme Wi-Fi Pirate 📶",
+            "Master of Last-Minute Cramming ⏱️",
+            "Certified Chaos Coordinator 🌀"
+        ];
+
+        // Funny outcome generators for each category
+        const predictionsData = {
+            career: [
+                (name, career) => `You accidentally invent a sentient smart-toaster that takes over your workplace, promoting you to Supreme Overlord of Toast.`,
+                (name) => `You become world-famous for sleeping through back-to-back board meetings and still getting employee of the month.`,
+                (name) => `Your startup goes viral because your company logo is literally just a cat picture wearing sunglasses.`,
+                (name) => `You quit your job to become a professional meme historian, making millions explaining old internet jokes to aliens.`
+            ],
+            love: [
+                (name) => `You meet your soulmate in a grocery store aisle while fighting over the last discounted bag of instant ramen.`,
+                (name) => `Your future partner falls deeply in love with you because you correctly guess their Netflix password on the first try.`,
+                (name) => `You end up marrying someone who accidentally ordered your takeout delivery for three years straight.`,
+                (name) => `You find true love with a barista who writes funny roast poems on your coffee cup every single morning.`
+            ],
+            money: [
+                (name) => `You find $50 in an old winter jacket pocket, invest it in meme cryptocurrency, and accidentally buy a small island.`,
+                (name) => `Your bank account balance fluctuates wildly between negative $4 and enough money to buy a small nation.`,
+                (name) => `You become rich entirely by charging your friends rent whenever they come over to complain about their lives.`,
+                (name) => `You win a lifetime supply of free cafeteria snacks, saving you enough cash to retire by age 35.`
+            ],
+            education: [
+                (name) => `You accidentally pass your final exams solely by absorbing textbook knowledge through your pillow while sleep-cramming.`,
+                (name) => `Your professor asks you to teach the class because your explanation of the subject involved a TikTok dance analogy.`,
+                (name) => `You graduate with honors in 'Procrastination Science' after finishing your thesis 4 minutes before the absolute deadline.`,
+                (name) => `You discover a secret loophole in the university library code that lets you skip morning classes legally.`
+            ],
+            friendship: [
+                (name) => `Your friendship group expands to include a stray raccoon that regularly helps you sneak snacks into the lecture hall.`,
+                (name) => `Your best friend becomes your personal bodyguard after you accidentally become internet-famous for tripping on a sidewalk.`,
+                (name) => `You and your crew start a band using only kitchen utensils, and somehow headline an international music festival.`,
+                (name) => `You become the designated life advisor for your entire friend circle, despite having zero clue what you're doing yourself.`
+            ],
+            happiness: [
+                (name) => `Peak happiness is achieved when you find a pristine, warm slice of pizza left untouched in the fridge at 3 AM.`,
+                (name) => `You achieve ultimate inner peace after finally unsubscribing from 457 promotional email newsletters at once.`,
+                (name) => `Your greatest source of joy becomes watching reality TV while eating cereal out of a mixing bowl.`,
+                (name) => `You find lasting bliss when you realize you don't have early morning alarms scheduled for the next decade.`
+            ]
+        };
+
+        // Helper function to pick a random item from an array
+        function getRandomItem(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        const predictorForm = document.getElementById('predictorForm');
+        const inputScreen = document.getElementById('inputScreen');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const assignedTitleEl = document.getElementById('assignedTitle');
+        const predictionCardsContainer = document.getElementById('predictionCardsContainer');
+        const tryAgainBtn = document.getElementById('tryAgainBtn');
+        const shareBtn = document.getElementById('shareBtn');
+
+        let lastGeneratedReport = "";
+
+        predictorForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value.trim();
+            const career = document.getElementById('career').value;
+
+            // Pick random title
+            const assignedTitle = getRandomItem(titlesPool);
+            assignedTitleEl.textContent = assignedTitle;
+
+            // Generate random hilarious outcomes for each category
+            const categories = [
+                { key: 'career', icon: '💼', title: 'Career & Ambition' },
+                { key: 'love', icon: '❤️', title: 'Love & Romance' },
+                { key: 'money', icon: '💰', title: 'Wealth & Finances' },
+                { key: 'education', icon: '🎓', title: 'Education & Skills' },
+                { key: 'friendship', icon: '🤝', title: 'Friendship & Crew' },
+                { key: 'happiness', icon: '✨', title: 'Vibes & Happiness' }
+            ];
+
+            let cardsHTML = '';
+            let reportTextSummary = `🔮 Future Report for ${name} [Title: ${assignedTitle}] 🔮\n\n`;
+
+            categories.forEach(cat => {
+                const generatorFunc = getRandomItem(predictionsData[cat.key]);
+                const predictionText = generatorFunc(name, career);
+                
+                reportTextSummary += `* ${cat.title}: ${predictionText}\n`;
+
+                cardsHTML += `
+                    <div class="card">
+                        <div class="card-icon">${cat.icon}</div>
+                        <div class="card-content">
+                            <h3>${cat.title}</h3>
+                            <p>${predictionText}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            lastGeneratedReport = reportTextSummary;
+            predictionCardsContainer.innerHTML = cardsHTML;
+
+            // Switch screens smoothly
+            inputScreen.style.display = 'none';
+            resultsScreen.style.display = 'block';
+        });
+
+        // Try Again Button Handler
+        tryAgainBtn.addEventListener('click', function() {
+            predictorForm.reset();
+            resultsScreen.style.display = 'none';
+            inputScreen.style.display = 'block';
+        });
+
+        // Share My Future Button Handler
+        shareBtn.addEventListener('click', async function() {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'My Future Predictor Report',
+                        text: lastGeneratedReport + '\nPlay Future Predictor now!'
+                    });
+                } catch (err) {
+                    console.log('Sharing canceled or failed', err);
+                }
+            } else {
+                // Fallback to clipboard copy
+                try {
+                    await navigator.clipboard.writeText(lastGeneratedReport);
+                    alert('📋 Future report copied to clipboard! Share it with your friends!');
+                } catch (err) {
+                    alert('Unable to copy automatically. Take a screenshot of your report!');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
